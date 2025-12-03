@@ -8,14 +8,14 @@ WORKDIR /app
 # Installer Supergateway et Rowboat en permanent
 RUN npm install -g supergateway @rowboatlabs/rowboatx@latest
 
-# Exposer le port
-EXPOSE 8000
+# Exposer le port 3000 (attendu par Coolify)
+EXPOSE 3000
 
 # Démarrer Supergateway en mode SSE avec Rowboat
 CMD supergateway \
     --stdio "rowboatx" \
     --outputTransport sse \
-    --port 8000 \
+    --port 3000 \
     --ssePath /sse \
     --messagePath /message \
     --logLevel info \
