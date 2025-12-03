@@ -1,27 +1,26 @@
 FROM node:20-slim
 
-# Installer curl pour health checks
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Installer les dépendances
+RUN apt-get update && apt-get install -y \
+    curl \
+    expect \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Installer Supergateway et Rowboat en permanent
-RUN apt update && apt-get install expect -y
-
+# Installer Supergateway et Rowboat
 RUN npm install -g supergateway @rowboatlabs/rowboatx@latest
-RUN apt update && apt-get install expect -y && apt-get install nano
-RUN launcher.sh 6 openai https://api.openai.com/v1 api_key
 
-# Exposer le port 3000 (attendu par Coolify)
+# Copier le script launcher
+COPY launcher.sh /app/launcher.sh
+RUN chmod +x /app/launcher.sh
+
+# Copier le script d'entrypoint
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Exposer le port
 EXPOSE 3000
 
-# Démarrer Supergateway en mode SSE avec Rowboat
-CMD supergateway \
-    --stdio "rowboatx" \
-    --outputTransport sse \
-    --port 3000 \
-    --ssePath /sse \
-    --messagePath /message \
-    --logLevel info \
-    --cors \
-    --healthEndpoint /health
+# Utiliser l'entrypoint qui configure puis lance supergateway
+ENTRYPOINT ["/app/entrypoint.sh"]
