@@ -27,21 +27,3 @@ send "$ai_model_name\r"
 
 # Attendre que la configuration soit terminée
 expect eof
-```
-
----
-
-## 📁 Structure du repo GitHub
-```
-rowboat-mcp-cli-test/
-├── Dockerfile
-├── entrypoint.sh
-├── launcher.sh
-└── .gitignore
-```
-
-### `.gitignore`
-```
-.env
-*.log
-node_modules/
